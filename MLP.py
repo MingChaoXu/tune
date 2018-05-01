@@ -231,7 +231,7 @@ def test_with_tsne(model_path):
     colors = ['red', 'm', 'cyan', 'blue', 'lime', 'lawngreen', 'lightcoral', 'lightyellow', 'mediumorchid', 'mediumpurple']
 
     plt.figure(figsize=(10, 6))
-
+    print('start plot:')
     for i in range(len(colors)):
         px = []
         py = []
