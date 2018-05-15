@@ -212,6 +212,11 @@ def test_with_tsne(model_path):
     layer2_out_all = layer2_out_all.data.numpy()
     layer3_out_all = layer3_out_all.data.numpy()
     layer4_out_all = layer4_out_all.data.numpy()
+
+    layer_out_all = torch.cat((layer1_out_all, layer2_out_all, layer3_out_all, layer4_out_all), 0)
+    # 保存每层输出
+    np.save('layer_out_all.npy', layer_out_all)
+
     # data_all = pd.DataFrame(data_all, index=data_all[:, 0]),
     tsne = manifold.TSNE(n_components=2, init='pca', random_state=0)
     layer1_out_all_tsne = np.array(tsne.fit_transform(layer1_out_all))[:, np.newaxis, :]
@@ -224,27 +229,30 @@ def test_with_tsne(model_path):
     layerout_tsne = np.concatenate((layerout_tsne, layer3_out_all_tsne), axis=1)
     layerout_tsne = np.concatenate((layerout_tsne, layer4_out_all_tsne), axis=1)
     np.save('layerout_tsne.npy', layerout_tsne)
-    # layerout_tsne = np.load('layerout_tsne.npy')
+    np.save('pred_all.npy', pred_all)
     # print(layerout_tsne.shape)
     # tsne = pd.DataFrame(tsne.embedding_, index=data_all.index)  # 转换数据格式
-
+# def plot_tsne():
+    layerout_tsne = np.load('layerout_tsne.npy')
     colors = ['red', 'm', 'cyan', 'blue', 'lime', 'lawngreen', 'lightcoral', 'lightyellow', 'mediumorchid', 'mediumpurple']
 
     plt.figure(figsize=(10, 6))
     print('start plot:')
-    for i in range(len(colors)):
-        px = []
-        py = []
-        px2 = []
-        py2 = []
-        for j in range(1000):
-            if pred_all[j] == i :
-                plt.plot(layerout_tsne[j,:,0], layerout_tsne[j,:,1])
-                # px.append(layerout_tsne[j, 0])
-                # py.append(layerout_tsne[j, 1])
+    for k in range(4):
+        plt.subplot(221 + k)
+        for i in range(len(colors)):
+            px = []
+            py = []
+            px2 = []
+            py2 = []
+            for j in range(1000):
+                if pred_all[j] == i :
+                    # plt.plot(layerout_tsne[j,:,0], layerout_tsne[j,:,1])
+                    px.append(layerout_tsne[j, k, 0])
+                    py.append(layerout_tsne[j, k, 1])
 
-        # plt.scatter(px, py, s=20, c=colors[i], marker='o')
-        # plt.scatter(px2, py2, s=20, c=colors[i], marker='v')
+            plt.scatter(px, py, s=20, c=colors[i], marker='o')
+            plt.scatter(px2, py2, s=20, c=colors[i], marker='v')
 
     # plt.legend(np.arange(0,5).astype(str))
     plt.xticks([])
@@ -305,3 +313,4 @@ if __name__ == '__main__' :
     #         'optimizer': optimizer.state_dict(),
     #     }, '%s_%s.pth.tar' % (args.save_path, epoch))
     test_with_tsne(args.load_path)
+    # plot_tsne()

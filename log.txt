@@ -1,6 +1,0 @@
-=> loaded model from checkpoint 'checkpoint/_15.pth.tar'
-start test:
-
-Test set: Average loss: -0.1000, Accuracy: 1189/10000 (12%)
-
-Computing t-SNE embedding
